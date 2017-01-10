@@ -1,0 +1,26 @@
+{
+  "name": "data-collect",
+  "version": "0.0.1",
+  "author": {
+    "name": "linmadan",
+    "email": "772181827@qq.com"
+  },
+  "scripts": {
+    "test": "./node_modules/.bin/mocha --recursive"
+  },
+  "devDependencies": {
+    "mocha": "^3.2.0",
+    "muk": "^0.5.3",
+    "should": "^11.1.2",
+    "supertest": "^2.0.1"
+  },
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "co": "^4.6.0",
+    "express": "^4.14.0",
+    "gridvo-common-js": "^0.0.6",
+    "kafka-node": "^1.1.0",
+    "mongodb": "^2.2.19",
+    "underscore": "^1.8.3"
+  }
+}
