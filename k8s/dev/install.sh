@@ -22,8 +22,11 @@ if [ "$?" == "1" ];then
 	fi
 else
 	kubectl delete -f data_collect-deployment.yaml
-	while ( "$kubectl get pods | grep -q data-collect" == "1" )
+	kubectl get pods | grep -q data-collect
+	while ( "$?" == "0" )
 	do
+	kubectl get pods | grep -q data-collect
+	done
 	kubectl create -f data_collect-deployment.yaml --record
 	kubectl get pods | grep -q data-collect
 	if [ "$?" == "0" ];then
@@ -31,5 +34,4 @@ else
 	else
 		echo "data_collect-deployment update fail!"
 	fi
-	done
 fi
