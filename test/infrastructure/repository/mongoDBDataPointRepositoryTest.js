@@ -15,7 +15,7 @@ describe('mongoDBDataPointRepository use case test', ()=> {
             it('should return true if save success', done=> {
                 let dataPoint = new DataPoint({
                     s: "/station/rain/other",
-                    t: (new Date()).getTime(),
+                    t: new Date(),
                     v: 110
                 });
                 Repository.save(dataPoint, {}, (err, isSuccess)=> {
