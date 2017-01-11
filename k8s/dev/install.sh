@@ -22,8 +22,7 @@ if [ "$?" == "1" ];then
 	fi
 else
 	kubectl delete -f data_collect-deployment.yaml
-	kubectl get pods | grep -q data-collect
-	while ( "$?" == "1" )
+	while ( "$kubectl get pods | grep -q data-collect" == "1" )
 	do
 	kubectl create -f data_collect-deployment.yaml --record
 	kubectl get pods | grep -q data-collect
