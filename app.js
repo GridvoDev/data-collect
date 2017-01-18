@@ -51,4 +51,3 @@ app.listen(3001, (err)=> {
         logger.info("express server is starting");
     }
 });
-logger.info("this is new");
