@@ -14,7 +14,7 @@ describe('mongoDBDataSourceRepository use case test', ()=> {
         context('save a data source', ()=> {
             it('should return true if save success', done=> {
                 let dataSource = new DataSource({
-                    id: "/station/rain/other",
+                    dataSourceID: "station-rain-other",
                     station: "stationID",
                     lessee: "lesseeID"
                 });
@@ -38,9 +38,9 @@ describe('mongoDBDataSourceRepository use case test', ()=> {
                 });
             });
             it('should return data source', done=> {
-                let id = "/station/rain/other";
+                let id = "station-rain-other";
                 Repository.getDataSourceByID(id, {}, (err, dataSource)=> {
-                    dataSource.id.should.be.eql("/station/rain/other");
+                    dataSource.dataSourceID.should.be.eql("station-rain-other");
                     dataSource.station.should.be.eql("stationID");
                     dataSource.lessee.should.be.eql("lesseeID");
                     done();

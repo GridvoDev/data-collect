@@ -24,7 +24,7 @@ describe('DataSourceService use case test', ()=> {
                 let mockDataSourceRepository = {};
                 mockDataSourceRepository.getDataSourceByID = (dataSourceID, {}, callback)=> {
                     callback(null, {
-                        id: "/station/datatype/other",
+                        dataSourceID: "station-datatype-other",
                         station: "stationID",
                         lessee: "lesseeID"
                     });
@@ -34,7 +34,7 @@ describe('DataSourceService use case test', ()=> {
                     if (err) {
                         done(err);
                     }
-                    dataSourceJSON.id.should.be.eql("/station/datatype/other");
+                    dataSourceJSON.dataSourceID.should.be.eql("station-datatype-other");
                     done();
                 });
             });
@@ -57,7 +57,7 @@ describe('DataSourceService use case test', ()=> {
                 };
                 muk(service, "_dataSourceRepository", mockDataSourceRepository);
                 let dataSourceData = {
-                    id: "/station/datatype/other",
+                    dataSourceID: "station-datatype-other",
                     station: "stationID",
                     lessee: "lesseeID"
                 };
@@ -69,7 +69,7 @@ describe('DataSourceService use case test', ()=> {
                     done();
                 });
             });
-            it('is success', done=> {
+            it('is fail if produce "data-source-added" topic message fail', done=> {
                 let mockDataSourceRepository = {};
                 mockDataSourceRepository.getDataSourceByID = (dataSourceID, {}, callback)=> {
                     callback(null, null);
@@ -78,8 +78,40 @@ describe('DataSourceService use case test', ()=> {
                     callback(null, true);
                 };
                 muk(service, "_dataSourceRepository", mockDataSourceRepository);
+                let mockMessageProducer = {};
+                mockMessageProducer.produceDataSourceAddedTopicMessage = (message, traceContext, callback)=> {
+                    callback(null, null);
+                };
+                muk(service, "_messageProducer", mockMessageProducer);
                 let dataSourceData = {
-                    id: "/station/datatype/other",
+                    dataSourceID: "station-datatype-other",
+                    station: "stationID",
+                    lessee: "lesseeID"
+                };
+                service.registerDataSource(dataSourceData, {}, (err, isSuccess)=> {
+                    if (err) {
+                        done(err);
+                    }
+                    isSuccess.should.be.eql(false);
+                    done();
+                });
+            });
+            it('is success , produce "data-source-added" topic message', done=> {
+                let mockDataSourceRepository = {};
+                mockDataSourceRepository.getDataSourceByID = (dataSourceID, {}, callback)=> {
+                    callback(null, null);
+                };
+                mockDataSourceRepository.save = (dataSource, {}, callback)=> {
+                    callback(null, true);
+                };
+                muk(service, "_dataSourceRepository", mockDataSourceRepository);
+                let mockMessageProducer = {};
+                mockMessageProducer.produceDataSourceAddedTopicMessage = (message, traceContext, callback)=> {
+                    callback(null, {});
+                };
+                muk(service, "_messageProducer", mockMessageProducer);
+                let dataSourceData = {
+                    dataSourceID: "station-datatype-other",
                     station: "stationID",
                     lessee: "lesseeID"
                 };

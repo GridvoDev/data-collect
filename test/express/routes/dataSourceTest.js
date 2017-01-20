@@ -22,7 +22,7 @@ describe('dataSourceRouter use case test', ()=> {
                 app.use('/data-sources', dataSourceRouter);
                 let mockDataSourceService = {};
                 mockDataSourceService.registerDataSource = function (dataSourceData, traceContext, callback) {
-                    if (!dataSourceData || !dataSourceData.id || !dataSourceData.station || !dataSourceData.lessee) {
+                    if (!dataSourceData || !dataSourceData.dataSourceID || !dataSourceData.station || !dataSourceData.lessee) {
                         callback(null, false);
                         return;
                     }
@@ -34,7 +34,7 @@ describe('dataSourceRouter use case test', ()=> {
                         return;
                     }
                     callback(null, {
-                        id: "station-type-other",
+                        dataSourceID: "station-type-other",
                         station: "stationID",
                         lessee: "lesseeID"
                     });
@@ -87,7 +87,7 @@ describe('dataSourceRouter use case test', ()=> {
                         }
                         res.body.errcode.should.be.eql(0);
                         res.body.errmsg.should.be.eql("ok");
-                        res.body.dataSource.id.should.be.eql("station-type-other");
+                        res.body.dataSource.dataSourceID.should.be.eql("station-type-other");
                         done();
                     });
             });
@@ -116,7 +116,7 @@ describe('dataSourceRouter use case test', ()=> {
                 request(server)
                     .post(`/data-sources`)
                     .send({
-                        id: "/station/type/other",
+                        dataSourceID: "station-type-other",
                         station: "stationID",
                         lessee: "lesseeID"
                     })
