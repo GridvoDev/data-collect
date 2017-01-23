@@ -13,7 +13,7 @@ RUN ["npm","install","--save","kafka-node@1.1.0"]
 RUN ["npm","install","--save","body-parser@1.15.2"]
 RUN ["npm","install","--save","underscore@1.8.3"]
 RUN ["npm","install","--save","mongodb@2.2.19"]
-RUN ["npm","install","--save","gridvo-common-js@0.0.16"]
+RUN ["npm","install","--save","gridvo-common-js@0.0.17"]
 COPY ./app.js app.js
 COPY ./lib lib
 COPY ./test test

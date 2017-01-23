@@ -30,7 +30,7 @@ describe('mongoDBDataPointRepository use case test', ()=> {
     });
     after(done=> {
         let {MONGODB_SERVICE_HOST = "127.0.0.1", MONGODB_SERVICE_PORT = "27017"}= process.env;
-        MongoClient.connect(`mongodb://${MONGODB_SERVICE_HOST}:${MONGODB_SERVICE_PORT}/DataCollect`, (err, db)=> {
+        MongoClient.connect(`mongodb://${MONGODB_SERVICE_HOST}:${MONGODB_SERVICE_PORT}/Data`, (err, db)=> {
             if (err) {
                 done(err);
             }

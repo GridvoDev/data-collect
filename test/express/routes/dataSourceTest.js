@@ -7,12 +7,12 @@ const bodyParser = require('body-parser');
 const dataSourceRouter = require('../../../lib/express/routes/dataSource');
 const {expressZipkinMiddleware, createZipkinTracer} = require("gridvo-common-js");
 
-describe('dataSourceRouter use case test', ()=> {
+describe('dataSourceRouter use case test', () => {
     let app;
     let server;
-    before(done=> {
+    before(done => {
         function setupExpress() {
-            return new Promise((resolve, reject)=> {
+            return new Promise((resolve, reject) => {
                 app = express();
                 app.use(bodyParser.json());
                 app.use(expressZipkinMiddleware({
@@ -39,8 +39,15 @@ describe('dataSourceRouter use case test', ()=> {
                         lessee: "lesseeID"
                     });
                 }
+                mockDataSourceService.getDataSources = function (queryOpts, traceContext, callback) {
+                    callback(null, [{
+                        dataSourceID: "station-type-other",
+                        station: "stationID",
+                        lessee: "lesseeID"
+                    }]);
+                }
                 app.set('dataSourceService', mockDataSourceService);
-                server = app.listen(3001, err=> {
+                server = app.listen(3001, err => {
                     if (err) {
                         reject(err);
                     } else {
@@ -52,20 +59,40 @@ describe('dataSourceRouter use case test', ()=> {
         function* setup() {
             yield setupExpress();
         };
-        co(setup).then(()=> {
+        co(setup).then(() => {
             done();
-        }).catch(err=> {
+        }).catch(err => {
             done(err);
         });
     });
-    describe('#get:/data-sources/:dataSourceID', ()=> {
-        context('get a data source', ()=> {
-            it('should response fail if no this data source', done=> {
+    describe('#get:/data-sources', () => {
+        context('get data sources', () => {
+            it('should response ok', done => {
+                request(server)
+                    .get(`/data-sources`)
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .end((err, res) => {
+                        if (err) {
+                            done(err);
+                            return;
+                        }
+                        res.body.errcode.should.be.eql(0);
+                        res.body.errmsg.should.be.eql("ok");
+                        res.body.dataSources[0].dataSourceID.should.be.eql("station-type-other");
+                        done();
+                    });
+            });
+        });
+    });
+    describe('#get:/data-sources/:dataSourceID', () => {
+        context('get a data source', () => {
+            it('should response fail if no this data source', done => {
                 request(server)
                     .get(`/data-sources/no-data-source`)
                     .expect(200)
                     .expect('Content-Type', /json/)
-                    .end((err, res)=> {
+                    .end((err, res) => {
                         if (err) {
                             done(err);
                             return;
@@ -75,12 +102,12 @@ describe('dataSourceRouter use case test', ()=> {
                         done();
                     });
             });
-            it('should response ok', done=> {
+            it('should response ok', done => {
                 request(server)
                     .get(`/data-sources/station-type-other`)
                     .expect(200)
                     .expect('Content-Type', /json/)
-                    .end((err, res)=> {
+                    .end((err, res) => {
                         if (err) {
                             done(err);
                             return;
@@ -93,16 +120,16 @@ describe('dataSourceRouter use case test', ()=> {
             });
         });
     });
-    describe('#post:/data-sources', ()=> {
-        context('add a data source', ()=> {
-            it('should response fail', done=> {
+    describe('#post:/data-sources', () => {
+        context('add a data source', () => {
+            it('should response fail', done => {
                 request(server)
                     .post(`/data-sources`)
                     .send({})
                     .set('Accept', 'application/json')
                     .expect(200)
                     .expect('Content-Type', /json/)
-                    .end((err, res)=> {
+                    .end((err, res) => {
                         if (err) {
                             done(err);
                             return;
@@ -112,7 +139,7 @@ describe('dataSourceRouter use case test', ()=> {
                         done();
                     });
             });
-            it('should response ok', done=> {
+            it('should response ok', done => {
                 request(server)
                     .post(`/data-sources`)
                     .send({
@@ -123,7 +150,7 @@ describe('dataSourceRouter use case test', ()=> {
                     .set('Accept', 'application/json')
                     .expect(200)
                     .expect('Content-Type', /json/)
-                    .end((err, res)=> {
+                    .end((err, res) => {
                         if (err) {
                             done(err);
                             return;
@@ -135,10 +162,10 @@ describe('dataSourceRouter use case test', ()=> {
             });
         });
     });
-    after(done=> {
+    after(done => {
         function teardownExpress() {
-            return new Promise((resolve, reject)=> {
-                server.close(err=> {
+            return new Promise((resolve, reject) => {
+                server.close(err => {
                     if (err) {
                         reject(err);
                     } else {
@@ -150,9 +177,9 @@ describe('dataSourceRouter use case test', ()=> {
         function* teardown() {
             yield teardownExpress();
         };
-        co(teardown).then(()=> {
+        co(teardown).then(() => {
             done();
-        }).catch(err=> {
+        }).catch(err => {
             done(err);
         });
     });
