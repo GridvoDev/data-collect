@@ -35,16 +35,24 @@ describe('dataSourceRouter use case test', () => {
                     }
                     callback(null, {
                         dataSourceID: "station-type-other",
+                        dataType: "dataType",
                         station: "stationID",
                         lessee: "lesseeID"
                     });
                 }
                 mockDataSourceService.getDataSources = function (queryOpts, traceContext, callback) {
-                    callback(null, [{
-                        dataSourceID: "station-type-other",
-                        station: "stationID",
-                        lessee: "lesseeID"
-                    }]);
+                    if (queryOpts.dataType) {
+                        queryOpts.dataType.should.eql("dataType");
+                        callback(null, []);
+                    }
+                    else {
+                        callback(null, [{
+                            dataSourceID: "station-type-other",
+                            dataType: "dataType",
+                            station: "stationID",
+                            lessee: "lesseeID"
+                        }]);
+                    }
                 }
                 app.set('dataSourceService', mockDataSourceService);
                 server = app.listen(3001, err => {
@@ -67,7 +75,7 @@ describe('dataSourceRouter use case test', () => {
     });
     describe('#get:/data-sources', () => {
         context('get data sources', () => {
-            it('should response ok', done => {
+            it('should response ok when no req.query', done => {
                 request(server)
                     .get(`/data-sources`)
                     .expect(200)
@@ -79,7 +87,24 @@ describe('dataSourceRouter use case test', () => {
                         }
                         res.body.errcode.should.be.eql(0);
                         res.body.errmsg.should.be.eql("ok");
+                        res.body.dataSources.length.should.be.eql(1);
                         res.body.dataSources[0].dataSourceID.should.be.eql("station-type-other");
+                        done();
+                    });
+            });
+            it('should response ok when have req.query', done => {
+                request(server)
+                    .get(`/data-sources?dataType=dataType`)
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .end((err, res) => {
+                        if (err) {
+                            done(err);
+                            return;
+                        }
+                        res.body.errcode.should.be.eql(0);
+                        res.body.errmsg.should.be.eql("ok");
+                        res.body.dataSources.length.should.be.eql(0);
                         done();
                     });
             });
@@ -144,6 +169,7 @@ describe('dataSourceRouter use case test', () => {
                     .post(`/data-sources`)
                     .send({
                         dataSourceID: "station-type-other",
+                        dataType: "dataType",
                         station: "stationID",
                         lessee: "lesseeID"
                     })

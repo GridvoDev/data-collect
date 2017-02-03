@@ -25,6 +25,7 @@ describe('DataSourceService use case test', () => {
                 mockDataSourceRepository.getDataSourceByID = (dataSourceID, traceContext, callback) => {
                     callback(null, {
                         dataSourceID: "station-datatype-other",
+                        dataType: "dataType",
                         station: "stationID",
                         lessee: "lesseeID"
                     });
@@ -35,6 +36,9 @@ describe('DataSourceService use case test', () => {
                         done(err);
                     }
                     dataSourceJSON.dataSourceID.should.be.eql("station-datatype-other");
+                    dataSourceJSON.dataType.should.be.eql("dataType");
+                    dataSourceJSON.station.should.be.eql("stationID");
+                    dataSourceJSON.lessee.should.be.eql("lesseeID");
                     done();
                 });
             });
@@ -60,6 +64,7 @@ describe('DataSourceService use case test', () => {
                 muk(service, "_dataSourceRepository", mockDataSourceRepository);
                 let dataSourceData = {
                     dataSourceID: "station-datatype-other",
+                    dataType: "dataType",
                     station: "stationID",
                     lessee: "lesseeID"
                 };
@@ -87,6 +92,7 @@ describe('DataSourceService use case test', () => {
                 muk(service, "_messageProducer", mockMessageProducer);
                 let dataSourceData = {
                     dataSourceID: "station-datatype-other",
+                    dataType: "dataType",
                     station: "stationID",
                     lessee: "lesseeID"
                 };
@@ -114,6 +120,7 @@ describe('DataSourceService use case test', () => {
                 muk(service, "_messageProducer", mockMessageProducer);
                 let dataSourceData = {
                     dataSourceID: "station-datatype-other",
+                    dataType: "dataType",
                     station: "stationID",
                     lessee: "lesseeID"
                 };
@@ -134,6 +141,7 @@ describe('DataSourceService use case test', () => {
                 mockDataSourceRepository.getDataSourcesByQueryOpts = (queryOpts, traceContext, callback) => {
                     callback(null, [{
                         dataSourceID: "station-datatype-other",
+                        dataType: "dataType",
                         station: "stationID",
                         lessee: "lesseeID"
                     }]);

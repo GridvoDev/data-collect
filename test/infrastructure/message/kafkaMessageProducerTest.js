@@ -48,6 +48,7 @@ describe('KafkaMessageProducer(topic, options) use case test', ()=> {
             it('should return data if message is send success', done=> {
                 let message = {
                     id: "station-rain-other",
+                    dataType:"dataType",
                     station: "stationID",
                     lessee: "lesseeID"
                 };
@@ -69,6 +70,7 @@ describe('KafkaMessageProducer(topic, options) use case test', ()=> {
                     consumer.on('message', function (message) {
                         let data = JSON.parse(message.value);
                         data.id.should.be.eql("station-rain-other");
+                        data.dataType.should.be.eql("dataType");
                         data.station.should.be.eql("stationID");
                         data.lessee.should.be.eql("lesseeID");
                         done();

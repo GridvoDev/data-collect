@@ -28,7 +28,7 @@ describe('messageConsumer() use case test', ()=> {
                                 reject(err)
                             }
                             let message = {
-                                s: "/station/rain/other",
+                                s: "NWH-SW-SQ",
                                 t: 1403610513000,
                                 v: 110,
                                 zipkinTrace: {
@@ -71,7 +71,7 @@ describe('messageConsumer() use case test', ()=> {
             it('should call dataPointCollectService.receiveData methods when consumer this topic', done=> {
                 var mockDataPointCollectService = {};
                 mockDataPointCollectService.receiveData = (originalData, traceContext, callback)=> {
-                    originalData.s.should.eql("/station/rain/other");
+                    originalData.s.should.eql("NWH-SW-SQ");
                     originalData.t.should.eql(1403610513000);
                     originalData.v.should.eql(110);
                     done();
