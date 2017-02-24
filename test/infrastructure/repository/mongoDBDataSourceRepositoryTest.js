@@ -99,6 +99,24 @@ describe('mongoDBDataSourceRepository use case test', () => {
                 });
             });
         });
+        describe('#delDataSourceByID(dataSourceID, traceContext, cb)', () => {
+            context('del a data source for id', () => {
+                it('should return false if no this data source', done => {
+                    let dataSourceID = "no-dataSource-id";
+                    Repository.delDataSourceByID(dataSourceID, {}, (err, isSuccess) => {
+                        isSuccess.should.be.eql(false);
+                        done();
+                    });
+                });
+                it('should return true', done => {
+                    let dataSourceID = "station-rain-other";
+                    Repository.delDataSourceByID(dataSourceID, {}, (err, isSuccess) => {
+                        isSuccess.should.be.eql(true);
+                        done();
+                    });
+                });
+            });
+        });
     });
     after(done => {
         let {MONGODB_SERVICE_HOST = "127.0.0.1", MONGODB_SERVICE_PORT = "27017"}= process.env;

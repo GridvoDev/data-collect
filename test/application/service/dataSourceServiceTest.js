@@ -157,6 +157,62 @@ describe('DataSourceService use case test', () => {
             });
         });
     });
+    describe('#removeDataSource(dataSourceID, traceContext, callback)', () => {
+        context('remove data source', () => {
+            it('if no data source return false', done => {
+                let mockDataSourceRepository = {};
+                mockDataSourceRepository.delDataSourceByID = (dataSourceID, traceContext, callback) => {
+                    callback(null, false);
+                };
+                muk(service, "_dataSourceRepository", mockDataSourceRepository);
+                service.removeDataSource("no-data-source", {}, (err, isSuccess) => {
+                    if (err) {
+                        done(err);
+                    }
+                    isSuccess.should.be.eql(false);
+                    done();
+                });
+            });
+            it('is return false if produce "data-source-deleted" topic message fail', done => {
+                let mockDataSourceRepository = {};
+                mockDataSourceRepository.delDataSourceByID = (dataSourceID, traceContext, callback) => {
+                    callback(null, true);
+                };
+                muk(service, "_dataSourceRepository", mockDataSourceRepository);
+                let mockMessageProducer = {};
+                mockMessageProducer.produceDataSourceDeletedTopicMessage = (message, traceContext, callback) => {
+                    callback(null, null);
+                };
+                muk(service, "_messageProducer", mockMessageProducer);
+                service.removeDataSource("data-source-id", {}, (err, isSuccess) => {
+                    if (err) {
+                        done(err);
+                    }
+                    isSuccess.should.be.eql(false);
+                    done();
+                });
+            });
+            it('is return true if all ok', done => {
+                let mockDataSourceRepository = {};
+                mockDataSourceRepository.delDataSourceByID = (dataSourceID, traceContext, callback) => {
+                    callback(null, true);
+                };
+                muk(service, "_dataSourceRepository", mockDataSourceRepository);
+                let mockMessageProducer = {};
+                mockMessageProducer.produceDataSourceDeletedTopicMessage = (message, traceContext, callback) => {
+                    callback(null, {});
+                };
+                muk(service, "_messageProducer", mockMessageProducer);
+                service.removeDataSource("data-source-id", {}, (err, isSuccess) => {
+                    if (err) {
+                        done(err);
+                    }
+                    isSuccess.should.be.eql(true);
+                    done();
+                });
+            });
+        });
+    });
     after(() => {
         muk.restore();
     });

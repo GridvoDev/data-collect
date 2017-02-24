@@ -40,6 +40,13 @@ describe('dataSourceRouter use case test', () => {
                         lessee: "lesseeID"
                     });
                 }
+                mockDataSourceService.removeDataSource = function (dataSourceID, traceContext, callback) {
+                    if (dataSourceID == "no-data-source") {
+                        callback(null, false);
+                        return;
+                    }
+                    callback(null, true);
+                }
                 mockDataSourceService.getDataSources = function (queryOpts, traceContext, callback) {
                     if (queryOpts.dataType) {
                         queryOpts.dataType.should.eql("dataType");
@@ -140,6 +147,41 @@ describe('dataSourceRouter use case test', () => {
                         res.body.errcode.should.be.eql(0);
                         res.body.errmsg.should.be.eql("ok");
                         res.body.dataSource.dataSourceID.should.be.eql("station-type-other");
+                        done();
+                    });
+            });
+        });
+    });
+    describe('#delete:/data-sources/:dataSourceID', () => {
+        context('delete a data source', () => {
+            it('should response fail if no this data source', done => {
+                request(server)
+                    .del(`/data-sources/no-data-source`)
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .end((err, res) => {
+                        if (err) {
+                            done(err);
+                            return;
+                        }
+                        res.body.errcode.should.be.eql(400);
+                        res.body.errmsg.should.be.eql("fail");
+                        done();
+                    });
+            });
+            it('should response ok', done => {
+                request(server)
+                    .del(`/data-sources/station-type-other`)
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .end((err, res) => {
+                        if (err) {
+                            done(err);
+                            return;
+                        }
+                        res.body.errcode.should.be.eql(0);
+                        res.body.errmsg.should.be.eql("ok");
+                        res.body.dataSourceID.should.be.eql("station-type-other");
                         done();
                     });
             });
