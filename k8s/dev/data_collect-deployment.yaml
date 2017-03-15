@@ -1,17 +1,20 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
+  labels:
+    name: data-collect
   name: data-collect
+  namespace: gridvo
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        app: data-collect
+        name: data-collect
     spec:
       containers:
       - name: data-collect
-        image: 10.0.2.62:5000/gridvo/data-collect:dev
+        image: 10.0.3.31:5000/gridvo/data-collect:dev
         imagePullPolicy: Always
         ports:
         - containerPort: 3001
