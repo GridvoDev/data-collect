@@ -27,7 +27,8 @@ describe('DataSourceService use case test', () => {
                         dataSourceID: "station-datatype-other",
                         dataType: "dataType",
                         station: "stationID",
-                        lessee: "lesseeID"
+                        lessee: "lesseeID",
+                        config: {FWJ: 60}
                     });
                 };
                 muk(service, "_dataSourceRepository", mockDataSourceRepository);
@@ -39,6 +40,7 @@ describe('DataSourceService use case test', () => {
                     dataSourceJSON.dataType.should.be.eql("dataType");
                     dataSourceJSON.station.should.be.eql("stationID");
                     dataSourceJSON.lessee.should.be.eql("lesseeID");
+                    should.exist(dataSourceJSON.config);
                     done();
                 });
             });
@@ -66,7 +68,8 @@ describe('DataSourceService use case test', () => {
                     dataSourceID: "station-datatype-other",
                     dataType: "dataType",
                     station: "stationID",
-                    lessee: "lesseeID"
+                    lessee: "lesseeID",
+                    config: {FWJ: 60}
                 };
                 service.registerDataSource(dataSourceData, {}, (err, isSuccess) => {
                     if (err) {
@@ -94,7 +97,8 @@ describe('DataSourceService use case test', () => {
                     dataSourceID: "station-datatype-other",
                     dataType: "dataType",
                     station: "stationID",
-                    lessee: "lesseeID"
+                    lessee: "lesseeID",
+                    config: {FWJ: 60}
                 };
                 service.registerDataSource(dataSourceData, {}, (err, isSuccess) => {
                     if (err) {
@@ -122,7 +126,8 @@ describe('DataSourceService use case test', () => {
                     dataSourceID: "station-datatype-other",
                     dataType: "dataType",
                     station: "stationID",
-                    lessee: "lesseeID"
+                    lessee: "lesseeID",
+                    config: {FWJ: 60}
                 };
                 service.registerDataSource(dataSourceData, {}, (err, isSuccess) => {
                     if (err) {
@@ -143,7 +148,8 @@ describe('DataSourceService use case test', () => {
                         dataSourceID: "station-datatype-other",
                         dataType: "dataType",
                         station: "stationID",
-                        lessee: "lesseeID"
+                        lessee: "lesseeID",
+                        config: {FWJ: 60}
                     }]);
                 };
                 muk(service, "_dataSourceRepository", mockDataSourceRepository);

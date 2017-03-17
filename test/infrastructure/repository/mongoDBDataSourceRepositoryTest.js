@@ -17,7 +17,8 @@ describe('mongoDBDataSourceRepository use case test', () => {
                     dataSourceID: "station-rain-other",
                     dataType: "dataType",
                     station: "stationID",
-                    lessee: "lesseeID"
+                    lessee: "lesseeID",
+                    config: {FWJ: 60}
                 });
                 Repository.save(dataSource, {}, (err, isSuccess) => {
                     if (err) {
@@ -45,6 +46,7 @@ describe('mongoDBDataSourceRepository use case test', () => {
                     dataSource.dataType.should.be.eql("dataType");
                     dataSource.station.should.be.eql("stationID");
                     dataSource.lessee.should.be.eql("lesseeID");
+                    dataSource.config.FWJ.should.be.eql(60);
                     done();
                 });
             });
@@ -60,6 +62,7 @@ describe('mongoDBDataSourceRepository use case test', () => {
                     dataSources[0].dataType.should.be.eql("dataType");
                     dataSources[0].station.should.be.eql("stationID");
                     dataSources[0].lessee.should.be.eql("lesseeID");
+                    dataSources[0].config.FWJ.should.be.eql(60);
                     done();
                 });
             });

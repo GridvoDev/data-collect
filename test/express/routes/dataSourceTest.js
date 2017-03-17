@@ -37,7 +37,8 @@ describe('dataSourceRouter use case test', () => {
                         dataSourceID: "station-type-other",
                         dataType: "dataType",
                         station: "stationID",
-                        lessee: "lesseeID"
+                        lessee: "lesseeID",
+                        config: {FWJ: 60}
                     });
                 }
                 mockDataSourceService.removeDataSource = function (dataSourceID, traceContext, callback) {
@@ -57,7 +58,8 @@ describe('dataSourceRouter use case test', () => {
                             dataSourceID: "station-type-other",
                             dataType: "dataType",
                             station: "stationID",
-                            lessee: "lesseeID"
+                            lessee: "lesseeID",
+                            config: {FWJ: 60}
                         }]);
                     }
                 }
@@ -213,7 +215,8 @@ describe('dataSourceRouter use case test', () => {
                         dataSourceID: "station-type-other",
                         dataType: "dataType",
                         station: "stationID",
-                        lessee: "lesseeID"
+                        lessee: "lesseeID",
+                        config: {FWJ: 60}
                     })
                     .set('Accept', 'application/json')
                     .expect(200)
