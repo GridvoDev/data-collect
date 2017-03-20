@@ -12,7 +12,6 @@ RUN ["npm","install","--save","mongodb@2.2.25"]
 RUN ["npm","install","--save","gridvo-common-js@0.0.23"]
 COPY ./app.js app.js
 COPY ./lib lib
-COPY ./test test
 VOLUME ["/home/data-collect"]
 ENTRYPOINT ["node"]
 CMD ["app.js"]
