@@ -3,6 +3,7 @@ const _ = require('underscore');
 const should = require('should');
 const muk = require('muk');
 const DataSourceService = require('../../../lib/application/service/dataSourceService');
+const DataSource = require('../../../lib/domain/dataSource');
 
 describe('DataSourceService use case test', () => {
     let service;
@@ -23,13 +24,13 @@ describe('DataSourceService use case test', () => {
             it('return dataSourceJSON', done => {
                 let mockDataSourceRepository = {};
                 mockDataSourceRepository.getDataSourceByID = (dataSourceID, traceContext, callback) => {
-                    callback(null, {
+                    callback(null, new DataSource({
                         dataSourceID: "station-datatype-other",
                         dataType: "dataType",
                         station: "stationID",
                         lessee: "lesseeID",
                         config: {FWJ: 60}
-                    });
+                    }));
                 };
                 muk(service, "_dataSourceRepository", mockDataSourceRepository);
                 service.getDataSource("data-source-id", {}, (err, dataSourceJSON) => {
@@ -144,13 +145,13 @@ describe('DataSourceService use case test', () => {
             it('if queryOpts is {} ,return all data sources', done => {
                 let mockDataSourceRepository = {};
                 mockDataSourceRepository.getDataSourcesByQueryOpts = (queryOpts, traceContext, callback) => {
-                    callback(null, [{
+                    callback(null, [new DataSource({
                         dataSourceID: "station-datatype-other",
                         dataType: "dataType",
                         station: "stationID",
                         lessee: "lesseeID",
                         config: {FWJ: 60}
-                    }]);
+                    })]);
                 };
                 muk(service, "_dataSourceRepository", mockDataSourceRepository);
                 service.getDataSources({}, {}, (err, dataSourcesJSON) => {
@@ -214,6 +215,103 @@ describe('DataSourceService use case test', () => {
                         done(err);
                     }
                     isSuccess.should.be.eql(true);
+                    done();
+                });
+            });
+        });
+    });
+    describe('#updateDataSourceConfig(dataSourceID, configs, traceContext, callback)', () => {
+        context('update data source configs', () => {
+            it('if no data source id,updated configs return null', done => {
+                let dataSourceID = null;
+                service.updateDataSourceConfig(dataSourceID, {}, {}, (err, updatedConfigs) => {
+                    if (err) {
+                        done(err);
+                    }
+                    _.isNull(updatedConfigs).should.be.eql(true);
+                    done();
+                });
+            });
+            it('if repository save fail,updated configs return null', done => {
+                let mockDataSourceRepository = {};
+                mockDataSourceRepository.getDataSourceByID = (dataSourceID, traceContext, callback) => {
+                    callback(null, new DataSource({
+                        dataSourceID: "station-datatype-other",
+                        dataType: "dataType",
+                        station: "stationID",
+                        lessee: "lesseeID",
+                        config: {FWJ: 50}
+                    }));
+                };
+                mockDataSourceRepository.save = (dataSource, traceContext, callback) => {
+                    callback(null, false);
+                };
+                muk(service, "_dataSourceRepository", mockDataSourceRepository);
+                let dataSourceID = "data-source-id";
+                service.updateDataSourceConfig(dataSourceID, {}, {}, (err, updatedConfigs) => {
+                    if (err) {
+                        done(err);
+                    }
+                    _.isNull(updatedConfigs).should.be.eql(true);
+                    done();
+                });
+            });
+            it('updated configs return null if produce "data-source-config" topic message fail', done => {
+                let mockDataSourceRepository = {};
+                mockDataSourceRepository.getDataSourceByID = (dataSourceID, traceContext, callback) => {
+                    callback(null, new DataSource({
+                        dataSourceID: "station-datatype-other",
+                        dataType: "dataType",
+                        station: "stationID",
+                        lessee: "lesseeID",
+                        config: {FWJ: 50}
+                    }));
+                };
+                mockDataSourceRepository.save = (dataSource, traceContext, callback) => {
+                    callback(null, true);
+                };
+                muk(service, "_dataSourceRepository", mockDataSourceRepository);
+                let mockMessageProducer = {};
+                mockMessageProducer.produceDataSourceConfigTopicMessage = (message, traceContext, callback) => {
+                    callback(null, null);
+                };
+                muk(service, "_messageProducer", mockMessageProducer);
+                let dataSourceID = "data-source-id";
+                service.updateDataSourceConfig(dataSourceID, {FWJ: 90}, {}, (err, updatedConfigs) => {
+                    if (err) {
+                        done(err);
+                    }
+                    _.isNull(updatedConfigs).should.be.eql(true);
+                    done();
+                });
+            });
+            it('return updated configs, produce "data-source-config" topic message if all is ok', done => {
+                let mockDataSourceRepository = {};
+                mockDataSourceRepository.getDataSourceByID = (dataSourceID, traceContext, callback) => {
+                    callback(null, new DataSource({
+                        dataSourceID: "station-datatype-other",
+                        dataType: "dataType",
+                        station: "stationID",
+                        lessee: "lesseeID",
+                        config: {FWJ: 50}
+                    }));
+                };
+                mockDataSourceRepository.save = (dataSource, traceContext, callback) => {
+                    callback(null, true);
+                };
+                muk(service, "_dataSourceRepository", mockDataSourceRepository);
+                let mockMessageProducer = {};
+                mockMessageProducer.produceDataSourceConfigTopicMessage = (message, traceContext, callback) => {
+                    callback(null, {});
+                };
+                muk(service, "_messageProducer", mockMessageProducer);
+                let dataSourceID = "data-source-id";
+                service.updateDataSourceConfig(dataSourceID, {FWJ: 90}, {}, (err, updatedConfigs) => {
+                    if (err) {
+                        done(err);
+                    }
+                    _.isNull(updatedConfigs).should.be.eql(false);
+                    updatedConfigs.FWJ.should.be.eql(90);
                     done();
                 });
             });

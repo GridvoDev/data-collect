@@ -63,6 +63,13 @@ describe('dataSourceRouter use case test', () => {
                         }]);
                     }
                 }
+                mockDataSourceService.updateDataSourceConfig = function (dataSourceID, configs, traceContext, callback) {
+                    if (dataSourceID == "no-data-source") {
+                        callback(null, null);
+                        return;
+                    }
+                    callback(null, {FWJ: 60});
+                }
                 app.set('dataSourceService', mockDataSourceService);
                 server = app.listen(3001, err => {
                     if (err) {
@@ -228,6 +235,45 @@ describe('dataSourceRouter use case test', () => {
                         }
                         res.body.errcode.should.be.eql(0);
                         res.body.errmsg.should.be.eql("ok");
+                        done();
+                    });
+            });
+        });
+    });
+    describe('#post:/data-sources/:dataSourceID/update-config', () => {
+        context('update a data source config', () => {
+            it('should response fail', done => {
+                request(server)
+                    .post(`/data-sources/no-data-source/update-config`)
+                    .send({})
+                    .set('Accept', 'application/json')
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .end((err, res) => {
+                        if (err) {
+                            done(err);
+                            return;
+                        }
+                        res.body.errcode.should.be.eql(400);
+                        res.body.errmsg.should.be.eql("fail");
+                        done();
+                    });
+            });
+            it('should response ok', done => {
+                request(server)
+                    .post(`/data-sources/data-source-id/update-config`)
+                    .send({FWJ: 60})
+                    .set('Accept', 'application/json')
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .end((err, res) => {
+                        if (err) {
+                            done(err);
+                            return;
+                        }
+                        res.body.errcode.should.be.eql(0);
+                        res.body.errmsg.should.be.eql("ok");
+                        should.exist(res.body.updatedConfigs);
                         done();
                     });
             });
